@@ -1,0 +1,149 @@
+# --- Experiment configurations --------------------------------------------------------------------
+
+# experiment name, used as folder name
+experiment_name: usa_time_split_high_gamma
+
+# files to specify training, validation and test basins (relative to code root or absolute path)
+train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+validation_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+
+# training, validation and test time periods (format = 'dd/mm/yyyy')
+train_start_date: '01/10/1999'
+train_end_date: '30/09/2009'
+validation_start_date: '01/10/1989'
+validation_end_date: '30/09/1999'
+test_start_date: '01/10/1999'
+test_end_date: '30/09/2009'
+
+# fixed seed, leave empty to use a random seed
+seed: 123
+
+# which GPU (id) to use [in format of cuda:0, cuda:1 etc, or cpu or None]
+device: cuda:0
+
+allow_subsequent_nan_losses: 5
+
+# --- Validation configuration ---------------------------------------------------------------------
+
+# specify after how many epochs to perform validation
+validate_every: 1
+
+# specify how many random basins to use for validation
+validate_n_random_basins: 1000
+
+# specify which metrics to calculate during validation (see codebase.evaluation.metrics)
+metrics:
+- NSE
+
+# --- Model configuration --------------------------------------------------------------------------
+
+# base model type [lstm, ealstm, cudalstm, embcudalstm, shortcutlstm, dropoutlstm, cudalstminitialh]
+# (has to match the if statement in modelzoo/__init__.py)
+model: cornn
+
+# coRNN hyperparameters
+dt : 0.05
+gamma : 10
+eps : 1
+
+# prediction head [regression, mdn, umal]. Define the head specific parameters below
+head: regression
+
+# ----> General xsettings <----
+
+# Number of cell states of the LSTM
+hidden_size: 128
+
+# Initial bias value of the forget gate
+initial_forget_bias: 3
+
+# Dropout applied to the output of the LSTM
+output_dropout: 0.4
+
+output_activation: linear
+
+# --- Training configuration -----------------------------------------------------------------------
+
+# specify optimizer [Adam, Adadelta]
+optimizer: Adam
+
+# specify loss [MSE, NSE, RMSE, UMALLoss, MDNLoss]
+loss: MSE
+
+# specify learning rates to use starting at specific epochs (0 is the initial learning rate)
+learning_rate:
+    0: 1e-3
+    21: 1e-4
+    31: 1e-5
+
+# Mini-batch size
+batch_size: 256
+
+# Number of training epochs
+epochs: 20
+
+# If True, clips norm of gradients
+clip_gradient_norm: 1
+
+# Defines which time steps are used to calculate the loss. Can't be larger than seq_length
+predict_last_n: 1
+
+# Length of the input sequence
+seq_length: 270
+
+# Number of parallel workers used in the data pipeline
+num_workers: 1
+
+# Log the training loss every n steps
+log_interval: 50
+
+# If true, writes logging results into tensorboard file
+log_tensorboard: True
+
+# Save model weights every n epochs
+save_weights_every: 1
+
+# Store the results of the validation to disk
+save_validation_results: True
+
+# --- Data configurations --------------------------------------------------------------------------
+# Data information
+dataset: era5_grdc_sheds
+data_dir: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/
+
+
+# variables to use as time series input (names match the data file column headers)
+# Note: In case of multiple input forcing products, you have to append the forcing product behind
+# each variable. E.g. 'prcp(mm/day)' of the daymet product is 'prcp(mm/day)_daymet'
+dynamic_inputs:
+- sro_sum # surface runoff
+- ssro_sum # sub surface runoff
+
+- sp_mean # surface pressure mean
+- t2m_mean # temperature at 2m height mean
+- str_mean # solar radiation mean
+
+# which columns to use as target
+target_variables:
+- streamflow
+
+static_attributes:
+- pre_mm_syr # mean precipitation
+- ari_ix_sav # aridity index (difference on the calculation between Kratzert and HydroSHEDS?)
+- area # area
+- ele_mt_sav # mean elevation
+- snw_pc_syr # snow fraction
+- slp_dg_sav # mean slope
+- kar_pc_sse # karst area extent (fraction of carbonate sedimentary rock?)
+- cly_pc_sav # clay fraction
+- pet_mm_syr # mean potential evaporation
+- for_pc_sse # forest fractino
+- snd_pc_sav # sand fraction
+- slt_pc_sav # silt fraction
+- gwt_cm_sav # ground water table depth
+- run_mm_syr # land surface runoff
+- soc_th_sav # organic carbon content
+- swc_pc_syr # soil water content
+- sgr_dk_sav # stream gradient
+- cmi_ix_syr # climate moisture index

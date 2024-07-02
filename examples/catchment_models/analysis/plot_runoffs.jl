@@ -7,7 +7,7 @@ using Statistics
 function main()
     # Define basin
     basin_id = 2070017000
-    base = "/central/scratch/mdemoura/Rivers"
+    base = "/home/achiang/CliMA/Rivers_odunbar/data_from_sampo"
     ddf = CSV.read(joinpath(base, "single_model_data/timeseries/timeseries_lv07/basin_$basin_id.csv"), DataFrame)
     sdf = CSV.read(joinpath(base, "single_model_data/attributes/attributes_lv07/other_attributes.csv"), DataFrame)
     basin_area = sdf[sdf[:, :basin_id] .== basin_id, "area"]

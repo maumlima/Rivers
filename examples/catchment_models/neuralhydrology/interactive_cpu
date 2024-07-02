@@ -1,0 +1,2 @@
+/bin/bash
+srun --pty -t 02:00:00 --mem=16000MB -N 1 -n 1 /bin/bash -l

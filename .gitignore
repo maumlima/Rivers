@@ -3,14 +3,18 @@ eng_*
 
 # images and csvs
 */png_files/*
-*.png
+# *.png
 */csv_files/*
 *.csv
-*/runs/*
+*.pyc
+examples/catchment_models/neuralhydrology/runs/*
+examples/catchment_models/neuralhydrology/*.out
+examples/catchment_models/lstm_training/runs/*
+
+
 
 # code in development
 dev/
 
 # others
 .DS_Store
-

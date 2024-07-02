@@ -1,0 +1,2 @@
+/bin/bash
+srun --pty -t 01:00:00 --mem=32000MB -N 1 -n 1 --partition=gpu --gres=gpu:v100:1 /bin/bash -l

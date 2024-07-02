@@ -1,12 +1,12 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: usa_time_split
+experiment_name: usa_time_split_control_all
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
-train_basin_file: path/to/basins.txt
-validation_basin_file: path/to/basins.txt
-test_basin_file: path/to/basins.txt
+train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+validation_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
 
 # training, validation and test time periods (format = 'dd/mm/yyyy')
 train_start_date: '01/10/1999'
@@ -27,7 +27,7 @@ allow_subsequent_nan_losses: 5
 # --- Validation configuration ---------------------------------------------------------------------
 
 # specify after how many epochs to perform validation
-validate_every: 2
+validate_every: 1
 
 # specify how many random basins to use for validation
 validate_n_random_basins: 1000
@@ -40,12 +40,17 @@ metrics:
 
 # base model type [lstm, ealstm, cudalstm, embcudalstm, shortcutlstm, dropoutlstm, cudalstminitialh]
 # (has to match the if statement in modelzoo/__init__.py)
-model: cudalstm
+model: cornn
+
+# coRNN hyperparameters
+dt : 0.05
+gamma : 1
+eps : 1
 
 # prediction head [regression, mdn, umal]. Define the head specific parameters below
 head: regression
 
-# ----> General settings <----
+# ----> General xsettings <----
 
 # Number of cell states of the LSTM
 hidden_size: 128
@@ -64,7 +69,7 @@ output_activation: linear
 optimizer: Adam
 
 # specify loss [MSE, NSE, RMSE, UMALLoss, MDNLoss]
-loss: NSE
+loss: MSE
 
 # specify learning rates to use starting at specific epochs (0 is the initial learning rate)
 learning_rate:
@@ -76,7 +81,7 @@ learning_rate:
 batch_size: 256
 
 # Number of training epochs
-epochs: 35
+epochs: 20
 
 # If True, clips norm of gradients
 clip_gradient_norm: 1
@@ -105,7 +110,7 @@ save_validation_results: True
 # --- Data configurations --------------------------------------------------------------------------
 # Data information
 dataset: era5_grdc_sheds
-data_dir: path/to/data
+data_dir: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/
 
 
 # variables to use as time series input (names match the data file column headers)
